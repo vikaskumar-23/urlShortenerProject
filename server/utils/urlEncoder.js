@@ -1,5 +1,3 @@
-// server/utils/urlEncoder.js
-
 /**
  * Generates a random alphanumeric slug of specified length
  * @param {number} length - The length of the slug to generate
