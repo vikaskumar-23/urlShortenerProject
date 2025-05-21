@@ -1,4 +1,3 @@
-// server/controllers/urlController.js
 const Url = require('../models/Url');
 const { generateRandomSlug, encodeBase62 } = require('../utils/urlEncoder');
 
