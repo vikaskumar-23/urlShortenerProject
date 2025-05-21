@@ -1,4 +1,3 @@
-// client/src/components/Stats.js
 import React, { useState, useEffect } from 'react';
 
 function Stats() {
