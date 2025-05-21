@@ -1,4 +1,3 @@
-// server/middleware/validateUrl.js
 const { isValidUrl, isValidCustomSlug } = require('../utils/urlEncoder');
 
 /**
