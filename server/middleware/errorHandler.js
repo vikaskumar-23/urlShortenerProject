@@ -1,4 +1,3 @@
-// server/middleware/errorHandler.js
 /**
  * Global error handling middleware
  */
