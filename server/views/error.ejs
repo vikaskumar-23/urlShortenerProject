@@ -1,0 +1,59 @@
+<!-- server/views/error.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Error - URL Shortener</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f7f9fc;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .error-container {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      padding: 30px;
+      max-width: 500px;
+      width: 90%;
+      text-align: center;
+    }
+    h1 {
+      color: #e53e3e;
+      margin-bottom: 20px;
+    }
+    p {
+      color: #4a5568;
+      margin-bottom: 25px;
+      font-size: 18px;
+    }
+    .home-button {
+      display: inline-block;
+      background-color: #4299e1;
+      color: white;
+      padding: 12px 24px;
+      border-radius: 4px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: background-color 0.3s;
+    }
+    .home-button:hover {
+      background-color: #3182ce;
+    }
+  </style>
+</head>
+<body>
+  <div class="error-container">
+    <h1>Oops! Something went wrong</h1>
+    <p><%= message %></p>
+    <a href="/" class="home-button">Go to Homepage</a>
+  </div>
+</body>
+</html>

@@ -1,0 +1,365 @@
+/* client/src/App.css */
+:root {
+  --primary-color: #3498db;
+  --primary-dark: #2980b9;
+  --secondary-color: #2ecc71;
+  --secondary-dark: #27ae60;
+  --text-color: #333;
+  --light-bg: #f8f9fa;
+  --border-color: #e1e4e8;
+  --error-color: #e74c3c;
+  --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-family);
+  line-height: 1.6;
+  color: var(--text-color);
+  background-color: var(--light-bg);
+}
+
+.container {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Header Styles */
+.header {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 40px 0;
+  text-align: center;
+}
+
+.header h1 {
+  margin-bottom: 10px;
+  font-size: 2.5rem;
+}
+
+.header p {
+  font-size: 1.2rem;
+  opacity: 0.9;
+}
+
+/* Footer Styles */
+.footer {
+  background-color: #333;
+  color: white;
+  text-align: center;
+  padding: 20px 0;
+  margin-top: 40px;
+}
+
+/* Main Content Styles */
+main.container {
+  padding-top: 40px;
+  padding-bottom: 40px;
+}
+
+/* Tabs Styles */
+.tabs {
+  display: flex;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.tabs button {
+  padding: 12px 24px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  opacity: 0.7;
+  border-bottom: 3px solid transparent;
+  transition: all 0.3s;
+}
+
+.tabs button.active {
+  opacity: 1;
+  border-bottom: 3px solid var(--primary-color);
+}
+
+.tabs button:hover {
+  opacity: 1;
+}
+
+.content {
+  background: white;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Form Styles */
+.url-form-container {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.form-group small {
+  display: block;
+  margin-top: 6px;
+  color: #666;
+  font-size: 0.8rem;
+}
+
+.submit-btn {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  width: 100%;
+  transition: background-color 0.3s;
+}
+
+.submit-btn:hover {
+  background-color: var(--primary-dark);
+}
+
+.submit-btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.error-message {
+  color: var(--error-color);
+  background-color: rgba(231, 76, 60, 0.1);
+  padding: 12px;
+  border-radius: 4px;
+  margin-top: 20px;
+  border-left: 4px solid var(--error-color);
+}
+
+/* Result Styles */
+.result-container {
+  text-align: center;
+}
+
+.result-container h3 {
+  margin-bottom: 20px;
+  color: var(--secondary-color);
+}
+
+.result-details {
+  margin-bottom: 30px;
+}
+
+.result-item {
+  margin-bottom: 15px;
+  text-align: left;
+  background-color: var(--light-bg);
+  padding: 15px;
+  border-radius: 4px;
+}
+
+.result-item label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 5px;
+  color: #555;
+}
+
+.short-url-display {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.short-url-display p {
+  font-weight: 600;
+  color: var(--primary-color);
+  margin-right: 10px;
+  flex-grow: 1;
+}
+
+.copy-btn {
+  background-color: var(--secondary-color);
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.3s;
+}
+
+.copy-btn:hover {
+  background-color: var(--secondary-dark);
+}
+
+.reset-btn {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: background-color 0.3s;
+}
+
+.reset-btn:hover {
+  background-color: var(--primary-dark);
+}
+
+.truncate {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+/* Stats Styles */
+.stats-container {
+  padding: 10px;
+}
+
+.stats-container h2 {
+  text-align: center;
+  margin-bottom: 30px;
+  color: var(--primary-color);
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  margin-bottom: 40px;
+}
+
+.stat-card {
+  background-color: white;
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.stat-card h3 {
+  font-size: 1rem;
+  color: #555;
+  margin-bottom: 10px;
+}
+
+.stat-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--primary-color);
+}
+
+.top-urls {
+  background-color: white;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.top-urls h3 {
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.top-urls table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.top-urls th,
+.top-urls td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.top-urls th {
+  background-color: var(--light-bg);
+  font-weight: 600;
+}
+
+.loading {
+  text-align: center;
+  padding: 30px;
+  font-size: 1.2rem;
+  color: #555;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .header h1 {
+    font-size: 2rem;
+  }
+  
+  .header p {
+    font-size: 1rem;
+  }
+  
+  .content {
+    padding: 20px;
+  }
+  
+  .stats-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  
+  .top-urls table {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 500px) {
+  .tabs button {
+    padding: 10px 15px;
+    font-size: 0.9rem;
+  }
+  
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .result-item {
+    font-size: 0.9rem;
+  }
+  
+  .short-url-display {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .short-url-display p {
+    margin-bottom: 10px;
+    margin-right: 0;
+  }
+}
