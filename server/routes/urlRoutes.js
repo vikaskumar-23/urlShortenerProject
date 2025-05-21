@@ -1,4 +1,3 @@
-// server/routes/urlRoutes.js
 const express = require('express');
 const router = express.Router();
 const { createShortUrl, getUrlStats } = require('../controllers/urlController');
