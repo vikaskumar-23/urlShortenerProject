@@ -75,7 +75,7 @@ url-shortener/
 
 1. **Clone the repository**
    ```
-   git clone https://github.com/yourusername/url-shortener.git
+   git clone https://github.com/vikaskumar-23/urlShortenerProject.git
    cd url-shortener
    ```
 
@@ -88,8 +88,8 @@ url-shortener/
 3. **Set environment variables**
    Create a `.env` file in the server directory with the following:
    ```
+   MONGO_URI=mongodb://localhost:27017/urlshortenercl
    PORT=5000
-   MONGO_URI=your_mongodb_connection_string
    NODE_ENV=development
    ```
 
@@ -133,14 +133,3 @@ The URL schema includes the following fields:
 - `clicks`: Number of times the short URL has been accessed
 - `customSlug`: Whether the slug was custom-created by the user
 
-## Deployment
-
-This application can be deployed to various platforms:
-
-- **Heroku**: Deploy the entire MERN stack application
-- **Vercel/Netlify**: Deploy the React frontend
-- **MongoDB Atlas**: Host your MongoDB database
-
-## License
-
-MIT License
