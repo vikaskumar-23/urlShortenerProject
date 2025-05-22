@@ -1,8 +1,37 @@
 const Url = require('../models/Url');
 const { generateRandomSlug, encodeBase62 } = require('../utils/urlEncoder');
 
-// Create a counter collection for auto-incrementing IDs
-let nextId = 1; // Fallback if counter collection is not used
+// --- Click Analytics Queue Implementation ---
+// Map to buffer click increments: { slug: count }
+const clickQueue = new Map();
+const FLUSH_INTERVAL_MS = 5000; // Flush every 5 seconds (adjust as needed)
+
+// Periodically flush the click queue to the database
+setInterval(async () => {
+  if (clickQueue.size === 0) return;
+  const updates = [];
+  for (const [slug, count] of clickQueue.entries()) {
+    updates.push(
+      Url.updateOne({ slug }, { $inc: { clicks: count } }).exec()
+    );
+  }
+  // Wait for all updates to finish
+  await Promise.all(updates);
+  clickQueue.clear();
+}, FLUSH_INTERVAL_MS);
+
+// On process exit, flush remaining clicks
+process.on('exit', async () => {
+  if (clickQueue.size === 0) return;
+  const updates = [];
+  for (const [slug, count] of clickQueue.entries()) {
+    updates.push(
+      Url.updateOne({ slug }, { $inc: { clicks: count } }).exec()
+    );
+  }
+  await Promise.all(updates);
+  clickQueue.clear();
+});
 
 /**
  * Create a shortened URL
@@ -106,25 +135,19 @@ const createShortUrl = async (req, res) => {
 const redirectToUrl = async (req, res) => {
   try {
     const { slug } = req.params;
-    
     // Find the URL document by slug
     const url = await Url.findOne({ slug });
-    
     // If URL doesn't exist
     if (!url) {
       return res.status(404).render('error', { message: 'URL not found' });
     }
-    
     // Check if URL has expired
     const now = new Date();
     if (url.expiresAt && now > url.expiresAt) {
       return res.status(410).render('error', { message: 'Link has expired' });
     }
-    
-    // Increment click count
-    url.clicks += 1;
-    await url.save();
-    
+    // --- Buffer click increment instead of immediate DB write ---
+    clickQueue.set(slug, (clickQueue.get(slug) || 0) + 1);
     // Redirect to the original URL
     res.redirect(url.originalUrl);
   } catch (error) {

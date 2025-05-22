@@ -17,7 +17,14 @@ A complete URL shortening service built with the MERN stack (MongoDB, Express.js
 - **Custom Slugs**: Create personalized short links (e.g., `/my-link`)
 - **Expiration Settings**: Set custom expiration dates for links
 - **Statistics**: View usage stats for your shortened URLs
+- **Efficient Click Analytics (Queue-based)**: Clicks are now buffered in memory and written to the database in batches, reducing write load and improving performance for high-traffic links.
 - **Responsive Design**: Works on desktop and mobile
+
+## How Click Analytics Queue Works
+
+- When a short URL is accessed, the click is added to an in-memory queue instead of being written to the database immediately.
+- Every few seconds, all queued click counts are flushed to the database in bulk.
+- This approach reduces database writes and is especially beneficial for popular links.
 
 ## Tech Stack
 
@@ -49,7 +56,7 @@ url-shortener/
 │   ├── config/
 │   │   └── db.js             # MongoDB connection
 │   ├── controllers/
-│   │   └── urlController.js  # Controller for URL operations
+│   │   └── urlController.js  # Controller for URL operations (includes click queue logic)
 │   ├── middleware/
 │   │   ├── errorHandler.js   # Error handling middleware
 │   │   └── validateUrl.js    # URL validation middleware
