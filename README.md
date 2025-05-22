@@ -3,11 +3,11 @@
 A complete URL shortening service built with the MERN stack (MongoDB, Express.js, React, Node.js).
 
 ## Screenshots 
-![image](https://github.com/user-attachments/assets/75596fa2-f625-4e5d-b459-731ef19b5191)
+![image](1.png)
 
 ---
 
-![image](https://github.com/user-attachments/assets/9f372f98-61a8-4991-9ae6-60dc6fa06abc)
+![image](2.png)
 
 
 
