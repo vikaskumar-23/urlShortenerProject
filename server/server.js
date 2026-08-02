@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const express = require('express');
 const path = require('path');
 const cors = require('cors');
@@ -23,19 +25,20 @@ app.set('views', path.join(__dirname, 'views'));
 // Routes
 app.use('/api/url', require('./routes/urlRoutes'));
 
+// Serve static assets in production. This must be registered BEFORE the
+// "/:slug" redirect route below, otherwise requests for real files like
+// favicon.ico or manifest.json get matched as slugs first and 404.
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, '../client/build')));
+}
+
 // Redirect route (this handles the short URL redirects)
 app.get('/:slug', redirectToUrl);
 
-// Serve static assets in production
+// SPA fallback in production, for any path that isn't a static file,
+// an API route, or a known slug
 if (process.env.NODE_ENV === 'production') {
-  // Set static folder
-  app.use(express.static(path.join(__dirname, '../client/build')));
-  
   app.get('*', (req, res) => {
-    // Exclude slug routes from this catch-all
-    if (req.path.length > 1 && !req.path.startsWith('/api')) {
-      return redirectToUrl(req, res);
-    }
     res.sendFile(path.resolve(__dirname, '../client/build', 'index.html'));
   });
 }

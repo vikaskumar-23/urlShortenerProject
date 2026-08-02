@@ -32,7 +32,9 @@ const urlSchema = new mongoose.Schema({
 // Add an index on the slug field for faster lookups
 urlSchema.index({ slug: 1 });
 
-// Add an index on expiresAt for easier querying of expired links
-urlSchema.index({ expiresAt: 1 });
+// TTL index: MongoDB automatically deletes a document once its expiresAt
+// timestamp has passed. Documents where expiresAt is null (never expires)
+// are left alone, since the TTL monitor only acts on real Date values.
+urlSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
 
 module.exports = mongoose.model('Url', urlSchema);

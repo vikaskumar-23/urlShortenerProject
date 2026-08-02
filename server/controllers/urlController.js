@@ -1,13 +1,12 @@
 const Url = require('../models/Url');
-const { generateRandomSlug, encodeBase62 } = require('../utils/urlEncoder');
+const { generateRandomSlug } = require('../utils/urlEncoder');
 
 // --- Click Analytics Queue Implementation ---
 // Map to buffer click increments: { slug: count }
 const clickQueue = new Map();
 const FLUSH_INTERVAL_MS = 5000; // Flush every 5 seconds (adjust as needed)
 
-// Periodically flush the click queue to the database
-setInterval(async () => {
+const flushClickQueue = async () => {
   if (clickQueue.size === 0) return;
   const updates = [];
   for (const [slug, count] of clickQueue.entries()) {
@@ -18,20 +17,20 @@ setInterval(async () => {
   // Wait for all updates to finish
   await Promise.all(updates);
   clickQueue.clear();
-}, FLUSH_INTERVAL_MS);
+};
 
-// On process exit, flush remaining clicks
-process.on('exit', async () => {
-  if (clickQueue.size === 0) return;
-  const updates = [];
-  for (const [slug, count] of clickQueue.entries()) {
-    updates.push(
-      Url.updateOne({ slug }, { $inc: { clicks: count } }).exec()
-    );
-  }
-  await Promise.all(updates);
-  clickQueue.clear();
-});
+// Periodically flush the click queue to the database
+setInterval(flushClickQueue, FLUSH_INTERVAL_MS);
+
+// On shutdown, flush remaining clicks before actually exiting.
+// (process.on('exit', ...) can't reliably await async work, since Node
+// does not run further event-loop ticks once 'exit' fires.)
+const shutdown = async () => {
+  await flushClickQueue();
+  process.exit(0);
+};
+process.on('SIGINT', shutdown);
+process.on('SIGTERM', shutdown);
 
 /**
  * Create a shortened URL
@@ -77,20 +76,13 @@ const createShortUrl = async (req, res) => {
       // Generate a random slug
       slug = generateRandomSlug();
       
-      // Ensure slug uniqueness
+      // Ensure slug uniqueness, growing the slug by one character each
+      // retry so the collision odds shrink fast (62^n combinations)
       let attempts = 0;
       while (attempts < 5) {
         const slugExists = await Url.findOne({ slug });
         if (!slugExists) break;
-        
-        // Try a different approach with each attempt
-        if (attempts === 0) {
-          slug = generateRandomSlug(7); // Try longer slug
-        } else if (attempts === 1) {
-          slug = encodeBase62(nextId++); // Try base62 encoding
-        } else {
-          slug = `${generateRandomSlug(4)}${Date.now() % 1000}`; // Random + timestamp
-        }
+        slug = generateRandomSlug(6 + attempts + 1);
         attempts++;
       }
       

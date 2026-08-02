@@ -18,6 +18,7 @@ A complete URL shortening service built with the MERN stack (MongoDB, Express.js
 - **Expiration Settings**: Set custom expiration dates for links
 - **Statistics**: View usage stats for your shortened URLs
 - **Efficient Click Analytics (Queue-based)**: Clicks are now buffered in memory and written to the database in batches, reducing write load and improving performance for high-traffic links.
+- **Automatic Link Expiry Cleanup**: Expired links are automatically deleted from the database via a MongoDB TTL index — no cron job required.
 - **Responsive Design**: Works on desktop and mobile
 
 ## How Click Analytics Queue Works
@@ -25,6 +26,7 @@ A complete URL shortening service built with the MERN stack (MongoDB, Express.js
 - When a short URL is accessed, the click is added to an in-memory queue instead of being written to the database immediately.
 - Every few seconds, all queued click counts are flushed to the database in bulk.
 - This approach reduces database writes and is especially beneficial for popular links.
+- On shutdown (`SIGINT`/`SIGTERM`), the server flushes any remaining queued clicks before exiting.
 
 ## Tech Stack
 
@@ -145,7 +147,17 @@ The URL schema includes the following fields:
 - `slug`: The short URL identifier (unique)
 - `originalUrl`: The original long URL
 - `createdAt`: When the URL was shortened
-- `expiresAt`: When the URL will expire (null if never)
+- `expiresAt`: When the URL will expire (null if never). Backed by a TTL index, so once this date passes MongoDB removes the document automatically.
 - `clicks`: Number of times the short URL has been accessed
 - `customSlug`: Whether the slug was custom-created by the user
+
+## Fixes
+
+A handful of bugs found while reviewing the code have been fixed:
+
+- **Static assets shadowed in production**: `GET /:slug` was registered before the production `express.static` middleware, so requests for real files like `favicon.ico` or `manifest.json` were matched as slugs first and returned a 404 instead of the actual file. Static file serving is now registered before the slug route.
+- **`.env` file was never loaded**: `dotenv` was a dependency but `require('dotenv').config()` was never called, so `MONGO_URI`/`PORT` from `.env` were silently ignored in favor of the hardcoded defaults. `server.js` now loads it on startup.
+- **Broken slug-retry logic**: the random-slug collision retry referenced an undeclared `nextId` variable, throwing on the second retry attempt. It now retries with a progressively longer random slug instead.
+- **Expired links were never deleted**: the `expiresAt` index only supported filtering, not cleanup, so expired links accumulated forever. It's now a TTL index (`expireAfterSeconds: 0`), so MongoDB deletes expired documents automatically.
+- **Unreliable click flush on shutdown**: the click-queue flush on `process.on('exit', ...)` couldn't actually finish its async database writes before the process exited. Shutdown is now handled via `SIGINT`/`SIGTERM`, which awaits the flush before exiting.
 
