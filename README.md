@@ -132,6 +132,30 @@ url-shortener/
 6. **Access the application**
    Open your browser and navigate to `http://localhost:3000`
 
+## Deployment
+
+This repo includes a [`render.yaml`](render.yaml) Blueprint for one-click deployment to [Render](https://render.com). Any host that runs a persistent Node process works too (Railway, Fly.io, a VPS) — a serverless platform (Vercel, Netlify Functions) is **not** a fit here, since the click-batching feature (see "How Click Analytics Queue Works" above) relies on in-memory state surviving between requests, which serverless functions don't guarantee.
+
+### 1. Create a free MongoDB Atlas cluster
+
+1. Sign up at [mongodb.com/cloud/atlas/register](https://www.mongodb.com/cloud/atlas/register)
+2. Create a free **M0** cluster
+3. Under **Database Access**, create a database user (username + password)
+4. Under **Network Access**, allow access from anywhere (`0.0.0.0/0`) — Render's free tier has no static IP to allowlist
+5. Click **Connect → Drivers** and copy the connection string, e.g.
+   ```
+   mongodb+srv://<user>:<password>@cluster0.xxxxx.mongodb.net/urlshortener?retryWrites=true&w=majority
+   ```
+
+### 2. Deploy to Render
+
+1. Sign up at [render.com](https://render.com) and connect your GitHub account
+2. **New → Blueprint**, select this repository — Render detects `render.yaml` automatically
+3. When prompted for `MONGO_URI`, paste the Atlas connection string from step 1
+4. Deploy — Render builds the React client and starts the Express server as one service, matching the same production code path used locally with `NODE_ENV=production`
+
+Once live, short links look like `https://<your-service-name>.onrender.com/abc123` instead of `localhost`. Note: Render's free tier spins the service down after 15 minutes of inactivity, so the first request after a while takes 30-60 seconds to wake back up.
+
 ## Usage
 
 1. Enter a long URL in the input field
