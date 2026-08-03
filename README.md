@@ -2,6 +2,9 @@
 
 A complete URL shortening service built with the MERN stack (MongoDB, Express.js, React, Node.js).
 
+**Live demo: [url-shortener-8p4v.onrender.com](https://url-shortener-8p4v.onrender.com/)**
+*(hosted on Render's free tier — spins down after 15 min idle, so the first load after a while can take 30-60s to wake up)*
+
 ## Screenshots 
 ![image](1.png)
 
