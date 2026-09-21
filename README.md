@@ -178,13 +178,3 @@ The URL schema includes the following fields:
 - `clicks`: Number of times the short URL has been accessed
 - `customSlug`: Whether the slug was custom-created by the user
 
-## Fixes
-
-A handful of bugs found while reviewing the code have been fixed:
-
-- **Static assets shadowed in production**: `GET /:slug` was registered before the production `express.static` middleware, so requests for real files like `favicon.ico` or `manifest.json` were matched as slugs first and returned a 404 instead of the actual file. Static file serving is now registered before the slug route.
-- **`.env` file was never loaded**: `dotenv` was a dependency but `require('dotenv').config()` was never called, so `MONGO_URI`/`PORT` from `.env` were silently ignored in favor of the hardcoded defaults. `server.js` now loads it on startup.
-- **Broken slug-retry logic**: the random-slug collision retry referenced an undeclared `nextId` variable, throwing on the second retry attempt. It now retries with a progressively longer random slug instead.
-- **Expired links were never deleted**: the `expiresAt` index only supported filtering, not cleanup, so expired links accumulated forever. It's now a TTL index (`expireAfterSeconds: 0`), so MongoDB deletes expired documents automatically.
-- **Unreliable click flush on shutdown**: the click-queue flush on `process.on('exit', ...)` couldn't actually finish its async database writes before the process exited. Shutdown is now handled via `SIGINT`/`SIGTERM`, which awaits the flush before exiting.
-
